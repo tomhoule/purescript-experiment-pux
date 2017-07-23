@@ -1,58 +1,60 @@
 module Main where
 
+import Control.Monad.Eff.Class (liftEff)
 import Control.Monad.Eff.Console (log)
 import Control.Monad.Eff (Eff)
-import Prelude hiding (div)
+import Data.Foreign (toForeign)
+import Data.Maybe (Maybe(..))
+import DOM.Event.Event (preventDefault)
 import DOM.HTML (window)
-import Pux (CoreEffects, EffModel, start, mapEffects, mapState)
+import DOM.HTML.History (pushState, URL(..), DocumentTitle(..))
+import DOM.HTML.Window (history)
+import Prelude hiding (div)
+import Pux (CoreEffects, EffModel, start, mapEffects, mapState, noEffects, onlyEffects)
 import Pux.DOM.History (sampleURL)
-import Pux.DOM.Events (onClick, onChange)
 import Pux.DOM.HTML (HTML)
 import Pux.Renderer.React (renderToDOM)
-import Text.Smolder.HTML.Attributes (className, type', value)
-import Text.Smolder.HTML (button, div, h1, h2, input)
-import Text.Smolder.Markup (text, (#!), (!))
+import Signal ((~>))
 
 import Editions as Editions
 import Effects (AppEffects)
-import Events (Event(..))
-
-type State = {
-    editionForm :: Editions.EditionFormState
-  }
+import Events (Event(..), Route(..))
+import Routes as R
+import State (State)
+import Shared.Header (header)
 
 foldp :: Event -> State -> EffModel State Event AppEffects
-foldp (EditionForm e) s = Editions.foldp e s.editionForm
+foldp (EditionForm e) st = Editions.foldp e st.editionForm
   # mapEffects EditionForm
-  # mapState \st -> s { editionForm = st }
-
-header :: HTML Event
-header =
-  div ! className "hero is-primary" $ do
-    div ! className "hero-body" $ do
-      div ! className "container" $ do
-        h1 ! className "title" $ text "Locutions"
-        h2 ! className "subtitle" $ text "Ethica"
-        h2 ! className "subtitle" $ text "Spinoza"
+  # mapState \s -> st { editionForm = s }
+foldp (PageView route) st = noEffects $ st { currentRoute = route }
+foldp (Navigate url ev) st =
+  onlyEffects st [ liftEff do
+                     preventDefault ev
+                     h <- history =<< window
+                     pushState (toForeign {}) (DocumentTitle "") (URL url) h
+                     pure $ Just $ R.match url
+                 ]
 
 view :: State -> HTML Event
 view state = do
   header
-  div ! className "section" $ do
-    div ! className "container" $ do
-      div $ text state.editionForm.status
-      input ! type' "text" ! value state.editionForm.title #! (onChange $ \e -> EditionForm (Editions.Edit e))
-      button ! className "button" #! onClick (const $ EditionForm Editions.Initialize) $ text "Initialize"
+  R.page state.currentRoute state
 
 main :: Eff (CoreEffects AppEffects) Unit
 main = do
     log "Much types, very wow"
+
     url <- sampleURL =<< window
+    let routeSignal = url ~> R.match
+
     app <- start
         { initialState:
-          { editionForm: Editions.emptyEdition }
+          { currentRoute: Home
+          , editionForm: Editions.emptyEdition }
         , view
         , foldp
-        , inputs: []
+        , inputs: [routeSignal]
     }
+
     renderToDOM "#app" app.markup app.input

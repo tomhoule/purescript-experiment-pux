@@ -1,4 +1,4 @@
-module Editions.Elements where
+module Editions.EditionNew where
 
 import Pux.DOM.HTML (mapEvent, HTML)
 import Prelude (const, discard, ($))

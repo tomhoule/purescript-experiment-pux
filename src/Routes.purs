@@ -6,7 +6,7 @@ import Data.Maybe (fromMaybe)
 import Pux.DOM.HTML (HTML)
 import Pux.Router (router, lit, end)
 
-import Editions.Elements (editionForm)
+import Editions.EditionNew (editionForm)
 import Home as HomeP
 import State (State)
 import Events (Route(..), Event(..))

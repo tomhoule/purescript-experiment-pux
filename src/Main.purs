@@ -38,7 +38,7 @@ foldp (Navigate url ev) st =
 
 view :: State -> HTML Event
 view state = do
-  header
+  header state
   R.page state.currentRoute state
 
 main :: Eff (CoreEffects AppEffects) Unit

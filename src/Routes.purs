@@ -10,6 +10,7 @@ import Editions.Elements (editionForm)
 import Home as HomeP
 import State (State)
 import Events (Route(..), Event(..))
+import Shared.NotFound (notFound)
 
 match :: String -> Event
 match url = PageView $ fromMaybe NotFound $ router url $
@@ -20,4 +21,4 @@ match url = PageView $ fromMaybe NotFound $ router url $
 page :: Route -> (State -> HTML Event)
 page Home = HomeP.home
 page EditionNew = editionForm
-page NotFound = HomeP.home
+page NotFound = \s -> notFound

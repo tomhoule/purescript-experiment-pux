@@ -1,14 +1,14 @@
 module Editions where
 
 import Control.Monad.Eff.Class (liftEff)
-import Control.Monad.Eff.Console (CONSOLE, log)
-import Data.Maybe
-import Prelude hiding (div)
-import Pux.DOM.Events (onClick, onChange, DOMEvent, targetValue)
+import Control.Monad.Eff.Console (log)
+import Data.Maybe (Maybe(..))
+import Prelude (pure, ($), (*>))
+import Pux.DOM.Events (targetValue)
 import Pux (EffModel)
 
-import Effects
-import Editions.Events
+import Effects (AppEffects)
+import Editions.Events (EditionFormEvent(..))
 
 emptyEdition :: EditionFormState
 emptyEdition = { status: "Uninitialized", title: "", editor: "", year: Nothing }
@@ -25,4 +25,3 @@ foldp (Edit e) s =
   { state: s { title = (targetValue e) }
   , effects: [ liftEff $ log s.title *> pure Nothing ] }
 foldp Initialize s = { state: s { status = "Initialized" } , effects: [] }
-

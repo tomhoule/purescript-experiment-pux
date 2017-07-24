@@ -7,7 +7,7 @@ import Text.Smolder.Markup (text, (!))
 import Prelude (discard, ($))
 
 import Events
-import Shared.Components (link, linkWithAttrs)
+import Shared.Components (link)
 import State (State)
 
 header :: State -> HTML Event

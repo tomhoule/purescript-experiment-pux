@@ -18,7 +18,8 @@
     "purescript-affjax": "^4.0.0",
     "purescript-argonaut": "^3.0.0",
     "react": "^15.6.1",
-    "purescript-profunctor-lenses": "^3.2.0"
+    "purescript-pux": "^10.0.0",
+    "purescript-lens": "^3.0.0"
   },
   "devDependencies": {
     "purescript-psci-support": "^3.0.0"

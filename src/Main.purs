@@ -17,6 +17,7 @@ import Pux.Renderer.React (renderToDOM)
 import Signal ((~>))
 
 import Editions as Editions
+import Editions.New (emptyEdition)
 import Effects (AppEffects)
 import Events (Event(..), Route(..))
 import Routes as R
@@ -24,9 +25,9 @@ import State (State)
 import Shared.Header (header)
 
 foldp :: Event -> State -> EffModel State Event AppEffects
-foldp (EditionForm e) st = Editions.foldp e st.editionForm
+foldp (EditionForm e) st = Editions.foldp e st.editions
   # mapEffects EditionForm
-  # mapState \s -> st { editionForm = s }
+  # mapState \s -> st { editions = s }
 foldp (PageView route) st = noEffects $ st { currentRoute = route }
 foldp (Navigate url ev) st =
   onlyEffects st [ liftEff do
@@ -51,7 +52,11 @@ main = do
     app <- start
         { initialState:
           { currentRoute: Home
-          , editionForm: Editions.emptyEdition }
+          , editions:
+          { form: emptyEdition
+          , index: Nothing
+          }
+        }
         , view
         , foldp
         , inputs: [routeSignal]

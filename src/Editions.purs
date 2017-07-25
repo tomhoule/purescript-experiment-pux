@@ -2,26 +2,23 @@ module Editions where
 
 import Control.Monad.Eff.Class (liftEff)
 import Control.Monad.Eff.Console (log)
+import Data.Array
 import Data.Maybe (Maybe(..))
 import Prelude (pure, ($), (*>))
+import Pux (onlyEffects, noEffects)
 import Pux.DOM.Events (targetValue)
 import Pux (EffModel)
 
 import Effects (AppEffects)
 import Editions.Events (EditionFormEvent(..))
+import Editions.New
+import Models.Edition
 
-emptyEdition :: EditionFormState
-emptyEdition = { status: "Uninitialized", title: "", editor: "", year: Nothing }
-
-type EditionFormState = {
-    status :: String
-  , title :: String
-  , editor :: String
-  , year :: Maybe Int
+type EditionsState =
+  { form :: EditionFormState
+  , index :: Maybe (Array Edition)
   }
 
-foldp :: EditionFormEvent -> EditionFormState -> EffModel EditionFormState EditionFormEvent AppEffects
-foldp (Edit e) s =
-  { state: s { title = (targetValue e) }
-  , effects: [ liftEff $ log s.title *> pure Nothing ] }
-foldp Initialize s = { state: s { status = "Initialized" } , effects: [] }
+foldp :: EditionFormEvent -> EditionsState -> EffModel EditionsState EditionFormEvent AppEffects
+foldp (Edit l) st = noEffects $ st{form = l st.form}
+foldp Index st = onlyEffects st []

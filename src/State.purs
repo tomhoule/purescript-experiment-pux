@@ -1,9 +1,9 @@
 module State where
 
-import Editions
+import Editions (EditionsState)
 import Events (Route)
 
 type State =
   { currentRoute :: Route
-  , editionForm :: EditionFormState
+  , editions :: EditionsState
   }

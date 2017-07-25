@@ -3,7 +3,7 @@ module Shared.Components where
 import Data.Monoid (mempty)
 import DOM.Event.Types as DE
 import Pux.DOM.Events (onClick)
-import Text.Smolder.HTML (a, input)
+import Text.Smolder.HTML (a)
 import Text.Smolder.HTML.Attributes (href)
 import Text.Smolder.Markup (Attribute, Markup, (#!), (!))
 

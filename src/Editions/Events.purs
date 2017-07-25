@@ -1,5 +1,5 @@
 module Editions.Events where
 
-import Pux.DOM.Events (onClick, onChange, DOMEvent, targetValue)
+import Editions.New
 
-data EditionFormEvent = Initialize | Edit DOMEvent
+data EditionFormEvent = Edit (EditionFormState -> EditionFormState) | Index

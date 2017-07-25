@@ -5,4 +5,3 @@ import DOM (DOM)
 import DOM.HTML.Types (HISTORY)
 
 type AppEffects = (console :: CONSOLE, history :: HISTORY, dom :: DOM)
-

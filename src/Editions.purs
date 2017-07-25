@@ -1,18 +1,13 @@
 module Editions where
 
-import Control.Monad.Eff.Class (liftEff)
-import Control.Monad.Eff.Console (log)
-import Data.Array
-import Data.Maybe (Maybe(..))
-import Prelude (pure, ($), (*>))
-import Pux (onlyEffects, noEffects)
-import Pux.DOM.Events (targetValue)
-import Pux (EffModel)
+import Data.Maybe (Maybe)
+import Prelude (($))
+import Pux (EffModel, onlyEffects, noEffects)
 
 import Effects (AppEffects)
 import Editions.Events (EditionFormEvent(..))
-import Editions.New
-import Models.Edition
+import Editions.New (EditionFormState)
+import Models.Edition (Edition)
 
 type EditionsState =
   { form :: EditionFormState

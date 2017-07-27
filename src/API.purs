@@ -1,4 +1,4 @@
-module Api where
+module API where
 
 import Control.Monad.Aff (Aff)
 import Data.Either (Either)

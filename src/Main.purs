@@ -23,11 +23,16 @@ import Events (Event(..), Route(..))
 import Routes as R
 import State (State)
 import Shared.Header (header)
+import API (schema)
 
 foldp :: Event -> State -> EffModel State Event AppEffects
 foldp (EditionForm e) st = Editions.foldp e st.editions
   # mapEffects EditionForm
   # mapState \s -> st { editions = s }
+foldp Initialize st = onlyEffects st [
+  schema <#> \a -> Just (ReceiveSchema a)
+  ]
+foldp (ReceiveSchema s) st = noEffects $ st { schema = Just s }
 foldp (PageView route) st = noEffects $ st { currentRoute = route }
 foldp (Navigate url ev) st =
   onlyEffects st [ liftEff do
@@ -52,14 +57,15 @@ main = do
     app <- start
         { initialState:
           { currentRoute: Home
+          , schema: Nothing
           , editions:
-          { form: emptyEdition
-          , index: Nothing
-          }
+            { form: emptyEdition
+            , index: Nothing
+            }
         }
         , view
         , foldp
-        , inputs: [routeSignal]
+        , inputs: [routeSignal]  -- signal from constant: initialize
     }
 
     renderToDOM "#app" app.markup app.input

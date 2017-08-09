@@ -2,7 +2,7 @@ module API where
 
 import Control.Monad.Aff (Aff)
 import Data.Either (Either)
-import Models.Edition (Edition)
+import Models (Edition)
 import Network.HTTP.Affjax (get, AJAX)
 import Prelude (bind, ($), pure)
 import Data.Argonaut.Decode.Generic (gDecodeJson)

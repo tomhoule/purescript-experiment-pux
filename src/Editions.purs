@@ -7,7 +7,7 @@ import Pux (EffModel, onlyEffects, noEffects)
 import Effects (AppEffects)
 import Editions.Events (EditionFormEvent(..))
 import Editions.New (EditionFormState)
-import Models.Edition (Edition)
+import Models (Edition)
 
 type EditionsState =
   { form :: EditionFormState

@@ -1,28 +1,44 @@
 module API where
 
+import Control.Monad.Eff.Console (CONSOLE)
+import Control.Monad.Eff.Console (log)
 import Data.Either (Either, either)
-import Control.Monad.Aff (Aff)
+import Control.Monad.Aff (Aff, liftEff')
 import Control.Monad.Eff.Exception (error, Error)
 import Control.Monad.Error.Class (class MonadThrow, throwError)
 import Models (Edition, Schema)
 import Network.HTTP.Affjax as A
-import Prelude (bind, pure, (<<<))
+import Network.HTTP.StatusCode
+import Prelude (bind, pure, (<<<), discard, ($), (/=), const, (<>))
 import Data.Argonaut.Decode.Generic (gDecodeJson)
 import Data.Generic (class Generic)
+import Control.MonadZero
+import Signal.Channel
+import State
+import Config
 
-type HTTPMonad a = forall eff. Aff (ajax :: A.AJAX | eff) a
+data RequestOutcome a = Success a | NotFound | ServerError
+
+type HTTPMonad a = forall eff. Aff (ajax :: A.AJAX, channel :: CHANNEL, console :: CONSOLE | eff) a
 
 throwString :: forall m. MonadThrow Error m => String -> m Error
 throwString = throwError <<< error
 
-get :: forall a . Generic a => A.URL -> HTTPMonad a
-get url = do
-  res <- A.get url
-  let payload = gDecodeJson res.response :: Either String a
-  either (throwError <<< error) pure payload
+handleGetErrors :: forall a. A.AffjaxResponse a -> HTTPMonad a
+handleGetErrors res = case res.status of
+  StatusCode 200 -> pure res.response
+  StatusCode 404 -> throwError $ error "Not Found xoxo"
+  _ -> throwError $ error "Server Error xoxo"
 
-editions :: HTTPMonad (Array Edition)
+get :: forall a . Generic a => A.URL -> State -> HTTPMonad a
+get url { config: Config { apiURL } } = do
+  res <- A.get (apiURL <> url)
+  json <- handleGetErrors res
+  payload <- pure $ gDecodeJson json
+  either (const $ throwError $ error "noooo") pure payload
+
+editions :: State -> HTTPMonad (Array Edition)
 editions = get "/api/editions"
 
-schema :: HTTPMonad Schema
+schema :: State -> HTTPMonad Schema
 schema = get "/api/ethica/schema"

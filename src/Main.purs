@@ -24,13 +24,16 @@ import Routes as R
 import State (State)
 import Shared.Header (header)
 import API (schema)
+import Signal.Channel
+import Config
 
 foldp :: Event -> State -> EffModel State Event AppEffects
 foldp (EditionForm e) st = Editions.foldp e st.editions
   # mapEffects EditionForm
   # mapState \s -> st { editions = s }
 foldp Initialize st = onlyEffects st [
-  schema <#> \a -> Just (ReceiveSchema a)
+  (liftEff $ log "INITIALIZED DIGGA") *> pure Nothing,
+  schema st <#> \a -> Just (ReceiveSchema a)
   ]
 foldp (ReceiveSchema s) st = noEffects $ st { schema = Just s }
 foldp (PageView route) st = noEffects $ st { currentRoute = route }
@@ -53,10 +56,14 @@ main = do
 
     url <- sampleURL =<< window
     let routeSignal = url ~> R.match
+    initChannel <- channel Initialize
+
+    let config = Config { apiURL: "http://localhost:8000" }
 
     app <- start
         { initialState:
-          { currentRoute: Home
+          { config: config
+          , currentRoute: Home
           , schema: Nothing
           , editions:
             { form: emptyEdition
@@ -65,7 +72,9 @@ main = do
         }
         , view
         , foldp
-        , inputs: [routeSignal]  -- signal from constant: initialize
+        , inputs: [routeSignal, subscribe initChannel]
     }
+
+    send initChannel Initialize
 
     renderToDOM "#app" app.markup app.input

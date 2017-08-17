@@ -5,7 +5,11 @@ import Models (Schema)
 
 import Editions.Events as E
 
-data Route = Home | EditionNew | NotFound
+data Route =
+  Home
+  | EditionNew
+  | NotFound
+  | Pars1
 
 data Event =
   EditionForm E.EditionFormEvent

@@ -26,13 +26,13 @@ import Shared.Header (header)
 import API (schema)
 import Signal.Channel
 import Config
+import Debug.Trace
 
 foldp :: Event -> State -> EffModel State Event AppEffects
 foldp (EditionForm e) st = Editions.foldp e st.editions
   # mapEffects EditionForm
   # mapState \s -> st { editions = s }
 foldp Initialize st = onlyEffects st [
-  (liftEff $ log "INITIALIZED DIGGA") *> pure Nothing,
   schema st <#> \a -> Just (ReceiveSchema a)
   ]
 foldp (ReceiveSchema s) st = noEffects $ st { schema = Just s }

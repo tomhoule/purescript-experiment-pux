@@ -10,12 +10,16 @@ import Models (Edition, Schema)
 import Network.HTTP.Affjax as A
 import Network.HTTP.StatusCode
 import Prelude (bind, pure, (<<<), discard, ($), (/=), const, (<>))
-import Data.Argonaut.Decode.Generic (gDecodeJson)
+import Data.Argonaut.Generic.Aeson as AE
 import Data.Generic (class Generic)
+import Data.Argonaut.Core (Json)
 import Control.MonadZero
 import Signal.Channel
 import State
 import Config
+
+decodeJSON :: forall a. Generic a => Json -> Either String a
+decodeJSON = AE.decodeJson
 
 data RequestOutcome a = Success a | NotFound | ServerError
 
@@ -34,8 +38,8 @@ get :: forall a . Generic a => A.URL -> State -> HTTPMonad a
 get url { config: Config { apiURL } } = do
   res <- A.get (apiURL <> url)
   json <- handleGetErrors res
-  payload <- pure $ gDecodeJson json
-  either (const $ throwError $ error "noooo") pure payload
+  payload <- pure $ decodeJSON json
+  either (throwError <<< error) pure payload
 
 editions :: State -> HTTPMonad (Array Edition)
 editions = get "/api/editions"

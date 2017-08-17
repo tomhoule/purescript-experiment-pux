@@ -16,3 +16,4 @@ home s =
     div ! className "container" $ do
       div $ text "This is the homepage"
       link "/editions/new" $ text "To the edition form!!!!!!"
+      link "/pars1" $ text "To the first part"

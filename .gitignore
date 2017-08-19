@@ -8,3 +8,4 @@
 /.psa*
 output.js
 *.css
+node_modules

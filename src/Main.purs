@@ -9,7 +9,7 @@ import DOM.Event.Event (preventDefault)
 import DOM.HTML (window)
 import DOM.HTML.History (pushState, URL(..), DocumentTitle(..))
 import DOM.HTML.Window (history)
-import Prelude hiding (div)
+import Prelude (Unit, bind, discard, pure, (#), ($), (<#>), (=<<))
 import Pux (CoreEffects, EffModel, start, mapEffects, mapState, noEffects, onlyEffects)
 import Pux.DOM.History (sampleURL)
 import Pux.DOM.HTML (HTML)
@@ -24,9 +24,8 @@ import Routes as R
 import State (State)
 import Shared.Header (header)
 import API (schema)
-import Signal.Channel
+import Signal.Channel (channel, send, subscribe)
 import Config
-import Debug.Trace
 
 foldp :: Event -> State -> EffModel State Event AppEffects
 foldp (EditionForm e) st = Editions.foldp e st.editions

@@ -1,45 +1,57 @@
 module Pars1 where
 
-import Data.Foldable
-import Control.Apply
-import Control.Monad.Free
-import Data.Maybe
-import Control.Alt ((<|>))
+import Data.Monoid (mempty)
+import Data.Foldable (foldMap)
+import Data.Maybe (maybe', maybe)
 import Events (Event)
 import Pux.DOM.HTML (HTML)
-import State
-import Prelude
+import State (State)
+import Prelude (discard, show, ($), (<>))
 import Text.Smolder.HTML (div)
-import Text.Smolder.Markup (text, (!), MarkupM)
+import Text.Smolder.Markup (text, (!))
 import Text.Smolder.HTML.Attributes (className)
-import Models (Schema(..), Node(..), NumberedFragment(..))
-
-import Shared.Components (link)
+import Models (Schema(..), Node(..), NumberedFragment(..), ScopeDescriptor(..))
 
 index :: State -> HTML Event
 index s =
   div ! className "section" $ do
     div ! className "container" $ do
-      div $ text "Pars prima"
       maybe' (\_ -> div $ text "Loading") render s.schema
 
 
 render :: Schema -> HTML Event
-render (Schema parts) = div $
-  foldMap renderNode parts
+render (Schema parts) = renderNodes parts
+
+renderNodes :: Array Node -> HTML Event
+renderNodes node = foldMap renderNode node
+
+simpleNode :: String -> NumberedFragment -> HTML Event
+simpleNode ty (NumberedFragment nf) = div $ do
+  div ! className "title" $ text $ ty <> " " <> maybe mempty show nf.num
+  div ! className "left-indent" $ renderNodes nf.children
+
+titleDiv :: HTML Event -> HTML Event
+titleDiv children = div ! className "title" $ children
 
 renderNode :: Node -> HTML Event
-renderNode (AnonymousFragment _) = div $ text "..."
-renderNode Aliter = div $ text "aliter"
+renderNode (AnonymousFragment (NumberedFragment nf)) = div $ do
+  text $ maybe mempty show nf.num <> "- "
+  renderNodes nf.children
+renderNode Aliter = titleDiv $ text "aliter"
 renderNode Appendix = div $ text "appendix"
-renderNode (Axioma _) = div $ text "axioma"
-renderNode (Caput _) = div $ text "caput"
-renderNode (Corollarium _) = div $ text "corollarium"
-renderNode (Definitio _) = div $ text "Definitio"
-renderNode Demonstratio = div $ text "demonstratio"
-renderNode Explicatio = div $ text "explicatio"
-renderNode (Scope _) = div $ text "scope"
-renderNode (Pars (NumberedFragment nf)) = div $ text ("pars " <> (show nf.num)) >>= \_ -> foldMap renderNode nf.children
-renderNode (Propositio _) = div $ text "propositio"
-renderNode (Scholium _) = div $ text "scholium"
-renderNode _ = div $ text "unimplemented"
+renderNode (Axioma nf) = simpleNode "axioma" nf
+renderNode (Caput nf) = simpleNode "caput" nf
+renderNode (Corollarium nf) = simpleNode "corollarium" nf
+renderNode (Definitio nf) = simpleNode "definitio" nf
+renderNode Demonstratio = div ! className "title" $ text "demonstratio"
+renderNode Explicatio = div ! className "title" $ text "explicatio"
+renderNode (Scope (ScopeDescriptor dsc)) = div $ do
+  div ! className "title" $ text dsc.title
+  div ! className "left-indent" $ renderNodes dsc.children
+renderNode (Pars nf) = simpleNode "pars" nf
+renderNode (Propositio nf) = simpleNode "propositio" nf
+renderNode (Scholium nf) = simpleNode "scholium" nf
+renderNode (Praefatio) = div $ text "praefatio"
+renderNode (Lemma nf) = simpleNode "lemma" nf
+renderNode (Postulatum nf) = simpleNode "postulatum" nf
+renderNode (Titulus title) = titleDiv $ text title

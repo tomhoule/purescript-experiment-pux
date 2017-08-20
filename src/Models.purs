@@ -11,7 +11,7 @@ data Schema = Schema (Array Node)
 
 derive instance genericSchema :: Generic Schema
 
-data Node = AnonymousFragment NumberedFragment | Aliter | Appendix | Axioma NumberedFragment | Caput NumberedFragment | Corollarium NumberedFragment | Definitio NumberedFragment | Demonstratio | Explicatio | Scope ScopeDescriptor | Lemma NumberedFragment | Pars NumberedFragment | Postulatum NumberedFragment | Praefatio | Propositio NumberedFragment | Scholium NumberedFragment | Titulus String
+data Node = AnonymousFragment NumberedFragment | Aliter | Appendix | Axioma NumberedFragment | Caput NumberedFragment | Corollarium NumberedFragment | Definitio NumberedFragment | Demonstratio | Explicatio | Scope ScopeDescriptor | Lemma NumberedFragment | Pars NumberedFragment | Postulatum NumberedFragment | Praefatio | Propositio NumberedFragment | Scholium NumberedFragment
 
 derive instance genericNode :: Generic Node
 

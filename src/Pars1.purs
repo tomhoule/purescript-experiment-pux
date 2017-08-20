@@ -54,4 +54,3 @@ renderNode (Scholium nf) = simpleNode "scholium" nf
 renderNode (Praefatio) = div $ text "praefatio"
 renderNode (Lemma nf) = simpleNode "lemma" nf
 renderNode (Postulatum nf) = simpleNode "postulatum" nf
-renderNode (Titulus title) = titleDiv $ text title

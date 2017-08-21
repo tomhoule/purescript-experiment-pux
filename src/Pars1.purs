@@ -7,7 +7,7 @@ import Data.Maybe (maybe', maybe)
 import Events (Event)
 import Pux.DOM.HTML (HTML)
 import State (State)
-import Prelude (discard, show, ($), (<>))
+import Prelude (discard, show, ($), (<>), (-))
 import Text.Smolder.HTML (div)
 import Text.Smolder.Markup (text, (!))
 import Text.Smolder.HTML.Attributes (className)
@@ -20,7 +20,7 @@ index num s =
       maybe' (\_ -> div $ text "Loading") (\schema -> render schema num) s.schema
 
 render :: Schema -> Int -> HTML Event
-render (Schema parts) num = maybe' (\_ -> div $ text "Wrong part") renderNode (parts !! num)
+render (Schema parts) num = maybe' (\_ -> div $ text "Wrong part") renderNode (parts !! (num - 1))
 
 renderNodes :: Array Node -> HTML Event
 renderNodes node = foldMap renderNode node

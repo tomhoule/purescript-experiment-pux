@@ -9,7 +9,7 @@ data Route =
   Home
   | EditionNew
   | NotFound
-  | Pars1
+  | Pars Int
 
 data Event =
   EditionForm E.EditionFormEvent

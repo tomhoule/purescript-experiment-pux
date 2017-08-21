@@ -22,8 +22,8 @@ header state =
       div ! className "tabs is-boxed is-fullwidth" $ do
         div ! className "container" $ do
           ul $ do
-            li ! className "is-active" $ link "/pars1" $ text "Pars prima"
-            li $ link "/pars1" $ text "Pars secunda"
-            li $ link "/pars1" $ text "Pars tertia"
-            li $ link "/pars1" $ text "Pars quarta"
-            li $ link "/pars1" $ text "Pars quinta"
+            li ! className "is-active" $ link "/pars/1" $ text "Pars prima"
+            li $ link "/pars/2" $ text "Pars secunda"
+            li $ link "/pars/3" $ text "Pars tertia"
+            li $ link "/pars/4" $ text "Pars quarta"
+            li $ link "/pars/5" $ text "Pars quinta"

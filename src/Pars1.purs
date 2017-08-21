@@ -1,5 +1,6 @@
 module Pars1 where
 
+import Data.Array ((!!))
 import Data.Monoid (mempty)
 import Data.Foldable (foldMap)
 import Data.Maybe (maybe', maybe)
@@ -12,15 +13,14 @@ import Text.Smolder.Markup (text, (!))
 import Text.Smolder.HTML.Attributes (className)
 import Models (Schema(..), Node(..), NumberedFragment(..), ScopeDescriptor(..))
 
-index :: State -> HTML Event
-index s =
+index :: Int -> State -> HTML Event
+index num s =
   div ! className "section" $ do
     div ! className "container" $ do
-      maybe' (\_ -> div $ text "Loading") render s.schema
+      maybe' (\_ -> div $ text "Loading") (\schema -> render schema num) s.schema
 
-
-render :: Schema -> HTML Event
-render (Schema parts) = renderNodes parts
+render :: Schema -> Int -> HTML Event
+render (Schema parts) num = maybe' (\_ -> div $ text "Wrong part") renderNode (parts !! num)
 
 renderNodes :: Array Node -> HTML Event
 renderNodes node = foldMap renderNode node

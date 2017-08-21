@@ -1,10 +1,10 @@
 module Routes where
 
 import Control.Alt ((<|>))
-import Prelude (($), (<*), (*>), (<$))
+import Prelude (($), (<*), (*>), (<$), (<$>))
 import Data.Maybe (fromMaybe)
 import Pux.DOM.HTML (HTML)
-import Pux.Router (router, lit, end)
+import Pux.Router (router, lit, int, end)
 
 import Pars1 as P1
 import Editions.EditionNew (editionForm)
@@ -19,10 +19,10 @@ match url = PageView $ fromMaybe NotFound $ router url $
   <|>
   EditionNew <$ (lit "editions" *> lit "new") <* end
   <|>
-  Pars1 <$ (lit "pars1") <* end
+  Pars <$> (lit "pars" *> int) <* end
 
 page :: Route -> (State -> HTML Event)
 page Home = HomeP.home
 page EditionNew = editionForm
 page NotFound = \s -> notFound
-page Pars1 = P1.index
+page (Pars num) = P1.index num

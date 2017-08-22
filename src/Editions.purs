@@ -1,16 +1,16 @@
 module Editions where
 
 import Data.Maybe (Maybe)
-import Prelude (($))
+import Prelude (($), map)
 import Pux (EffModel, onlyEffects, noEffects)
 
 import Effects (AppEffects)
 import Editions.Events (EditionFormEvent(..))
-import Editions.New (EditionFormState)
-import Models (Edition)
+import Models (Edition, EditionNew(..))
+import Models (EditionNew)
 
 type EditionsState =
-  { form :: EditionFormState
+  { form :: EditionNew
   , index :: Maybe (Array Edition)
   }
 

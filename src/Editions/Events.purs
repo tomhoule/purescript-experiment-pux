@@ -1,5 +1,5 @@
 module Editions.Events where
 
-import Editions.New
+import Models (EditionNew)
 
-data EditionFormEvent = Edit (EditionFormState -> EditionFormState) | Index
+data EditionFormEvent = Edit (EditionNew -> EditionNew) | Index

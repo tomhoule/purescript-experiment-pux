@@ -19,6 +19,9 @@ import Config
 decodeJSON :: forall a. Generic a => Json -> Either String a
 decodeJSON = AE.decodeJson
 
+encodeJSON :: forall a. Generic a => a -> Json
+encodeJSON = AE.encodeJson
+
 data RequestOutcome a = Success a | NotFound | ServerError
 
 type HTTPMonad a = forall eff. Aff (ajax :: A.AJAX, channel :: CHANNEL, console :: CONSOLE | eff) a

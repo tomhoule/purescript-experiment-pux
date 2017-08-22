@@ -1,10 +1,10 @@
 module State where
 
-import Data.Maybe
+import Data.Maybe (Maybe)
 import Models (Schema)
 import Editions (EditionsState)
 import Events (Route)
-import Config
+import Config (Config)
 
 type State =
   { config :: Config

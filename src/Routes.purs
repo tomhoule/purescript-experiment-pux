@@ -6,7 +6,7 @@ import Data.Maybe (fromMaybe)
 import Pux.DOM.HTML (HTML)
 import Pux.Router (router, lit, int, end)
 
-import Pars1 as P1
+import Pars as P
 import Editions.EditionNew (editionForm)
 import Home as HomeP
 import State (State)
@@ -25,4 +25,4 @@ page :: Route -> (State -> HTML Event)
 page Home = HomeP.home
 page EditionNew = editionForm
 page NotFound = \s -> notFound
-page (Pars num) = P1.index num
+page (Pars num) = P.index num

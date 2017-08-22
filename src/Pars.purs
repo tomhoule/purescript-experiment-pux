@@ -1,4 +1,4 @@
-module Pars1 where
+module Pars where
 
 import Data.Array ((!!))
 import Data.Monoid (mempty)

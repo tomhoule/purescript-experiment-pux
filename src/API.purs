@@ -1,21 +1,19 @@
 module API where
 
 import Control.Monad.Eff.Console (CONSOLE)
-import Control.Monad.Eff.Console (log)
 import Data.Either (Either, either)
-import Control.Monad.Aff (Aff, liftEff')
+import Control.Monad.Aff (Aff)
 import Control.Monad.Eff.Exception (error, Error)
 import Control.Monad.Error.Class (class MonadThrow, throwError)
 import Models (Edition, Schema)
 import Network.HTTP.Affjax as A
-import Network.HTTP.StatusCode
-import Prelude (bind, pure, (<<<), discard, ($), (/=), const, (<>))
+import Network.HTTP.StatusCode (StatusCode(..))
+import Prelude (bind, pure, (<<<), ($), (<>))
 import Data.Argonaut.Generic.Aeson as AE
 import Data.Generic (class Generic)
 import Data.Argonaut.Core (Json)
-import Control.MonadZero
-import Signal.Channel
-import State
+import Signal.Channel (CHANNEL)
+import State (State)
 import Config
 
 decodeJSON :: forall a. Generic a => Json -> Either String a

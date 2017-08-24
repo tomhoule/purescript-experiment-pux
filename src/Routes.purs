@@ -8,6 +8,7 @@ import Pux.Router (router, lit, int, end)
 
 import Pars as P
 import Editions.EditionNew (editionForm)
+import Editions.Single (edition)
 import Home as HomeP
 import State (State)
 import Events (Route(..), Event(..))
@@ -24,6 +25,6 @@ match url = PageView $ fromMaybe NotFound $ router url $
 page :: Route -> (State -> HTML Event)
 page Home = HomeP.home
 page EditionNew = editionForm
-page (Edition name) = \s -> notFound
+page (Edition title) = edition title
 page NotFound = \s -> notFound
 page (Pars num) = P.index num

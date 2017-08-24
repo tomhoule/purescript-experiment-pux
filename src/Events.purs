@@ -8,6 +8,7 @@ import Editions.Events as E
 data Route =
   Home
   | EditionNew
+  | Edition String
   | NotFound
   | Pars Int
 

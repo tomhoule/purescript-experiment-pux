@@ -24,5 +24,6 @@ match url = PageView $ fromMaybe NotFound $ router url $
 page :: Route -> (State -> HTML Event)
 page Home = HomeP.home
 page EditionNew = editionForm
+page (Edition name) = \s -> notFound
 page NotFound = \s -> notFound
 page (Pars num) = P.index num

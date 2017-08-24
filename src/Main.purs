@@ -10,7 +10,7 @@ import DOM.HTML (window)
 import DOM.HTML.History (pushState, URL(..), DocumentTitle(..))
 import DOM.HTML.Window (history)
 import Prelude (Unit, bind, discard, pure, (#), ($), (<#>), (=<<))
-import Pux (CoreEffects, EffModel, start, mapEffects, mapState, noEffects, onlyEffects)
+import Pux (CoreEffects, EffModel, start, mapEffects, noEffects, onlyEffects)
 import Pux.DOM.History (sampleURL)
 import Pux.DOM.HTML (HTML)
 import Pux.Renderer.React (renderToDOM)
@@ -28,9 +28,8 @@ import Signal.Channel (channel, send, subscribe)
 import Config
 
 foldp :: Event -> State -> EffModel State Event AppEffects
-foldp (EditionForm e) st = Editions.foldp e st.editions
+foldp (EditionForm e) st = Editions.foldp e st
   # mapEffects EditionForm
-  # mapState \s -> st { editions = s }
 foldp Initialize st = onlyEffects st [
   schema st <#> \a -> Just (ReceiveSchema a)
   ]
@@ -67,6 +66,7 @@ main = do
           , editions:
             { form: emptyEdition
             , index: Nothing
+            , single: Nothing
             }
         }
         , view

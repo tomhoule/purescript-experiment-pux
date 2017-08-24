@@ -2,7 +2,7 @@ module State where
 
 import Data.Maybe (Maybe)
 import Models (Schema)
-import Editions (EditionsState)
+import Editions.State (EditionsState)
 import Events (Route)
 import Config (Config)
 

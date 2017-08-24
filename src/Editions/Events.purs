@@ -1,5 +1,9 @@
 module Editions.Events where
 
-import Models (EditionNew)
+import Models (EditionNew, Edition)
 
-data EditionFormEvent = Edit (EditionNew -> EditionNew) | Index
+data EditionFormEvent =
+  Edit (EditionNew -> EditionNew)
+  | Index
+  | ReceiveEdition Edition
+  | Submit EditionNew

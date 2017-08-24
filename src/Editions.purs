@@ -1,19 +1,20 @@
 module Editions where
 
-import Data.Maybe (Maybe)
-import Prelude (($), map)
+import Control.Monad.Aff
+import Data.Maybe(Maybe(..))
+import Prelude (($), (<*>), (<$>), (>>=), pure, (<#>))
 import Pux (EffModel, onlyEffects, noEffects)
 
+import API (createEdition)
 import Effects (AppEffects)
 import Editions.Events (EditionFormEvent(..))
+import State
 import Models (Edition, EditionNew(..))
-import Models (EditionNew)
 
-type EditionsState =
-  { form :: EditionNew
-  , index :: Maybe (Array Edition)
-  }
-
-foldp :: EditionFormEvent -> EditionsState -> EffModel EditionsState EditionFormEvent AppEffects
-foldp (Edit l) st = noEffects $ st{form = l st.form}
+foldp :: EditionFormEvent -> State -> EffModel State EditionFormEvent AppEffects
+foldp (Edit s) st = noEffects $ st{editions {form = s st.editions.form}}
+foldp (Submit f) st = onlyEffects st [
+    createEdition f st <#> \ed -> Just $ ReceiveEdition ed
+  ]
 foldp Index st = onlyEffects st []
+foldp (ReceiveEdition ed) st = noEffects $ st{editions {single = Just ed}}
